@@ -1,14 +1,15 @@
-from src.argparser import ArgParser
+from src.config import Config
 from src.creeper import Creeper
 
-p = ArgParser()
-args = p.parse()
+
+conf = Config()
+conf.parse()
 
 c = Creeper()
-c.walk(args['target'])
+c.walk(conf['target'])
 print(c.file_list)
 
-for dir in args['directories']:
+for dir in conf['directories']:
     c = Creeper()
     c.walk(dir)
     print(c.file_list)
