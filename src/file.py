@@ -1,32 +1,65 @@
-from datetime import date
+class GenericFlags(list):
+    pattern: str
 
-def bits2attribs(bits: int) -> tuple:
-    return (
-        bits & 0b1000000000 == 512,
-        bits & 0b0100000000 == 256,
-        bits & 0b0010000000 == 128,
-        bits & 0b0001000000 == 64,
-        bits & 0b0000100000 == 32,
-        bits & 0b0000010000 == 16,
-        bits & 0b0000001000 == 8,
-        bits & 0b0000000100 == 4,
-        bits & 0b0000000010 == 2,
-        bits & 0b0000000001 == 1
-    )
+    def __init__(self, *args) -> None:
+        super(GenericFlags, self).__init__()
+        if len(args) < 2:
+            return
+        if isinstance(args[1], str):
+            self.pattern = args[1]
+        if len(args) < 3:
+            caller = GenericFlags
+        else:
+            caller = args[2]
 
-def attribs2str(attribs: tuple) -> str:
-    return "".join([
-        'd' if attribs[0] else '-',
-        'r' if attribs[1] else '-',
-        'w' if attribs[2] else '-',
-        'x' if attribs[3] else '-',
-        'r' if attribs[4] else '-',
-        'w' if attribs[5] else '-',
-        'x' if attribs[6] else '-',
-        'r' if attribs[7] else '-',
-        'w' if attribs[8] else '-',
-        'x' if attribs[9] else '-',
-    ])
+        if isinstance(args[0], int):
+            self.extend([(args[0] & 2**mask) == 2**mask for mask in range(len(self.pattern) - 1, -1, -1)])
+        elif isinstance(args[0], str):
+            self.extend(caller.revstr(self, args[0]))
+        elif isinstance(args[0], list):
+            self.extend(args[0])
+
+    def revstr(self, chars) -> list:
+        return [inchar == patchar for inchar, patchar in zip(chars, self.pattern)]
+
+    def __str__(self) -> str:
+        return "".join([char if bit else '-' for bit, char in zip(self, self.pattern)])
+
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, GenericFlags):
+            return False
+        for x, y in zip(self, __o):
+            if x != y:
+                return False
+        return True
+    
+    def __ne__(self, __o: object) -> bool:
+        return not self.__eq__(__o)
+
+
+class Flags(GenericFlags):
+    pattern = 'drwxrwxrwx'
+
+    def __init__(self, args) -> None:
+        super(Flags, self).__init__(args, self.pattern, Flags)
+
+    def revstr(self, chars: str) -> list:
+        flags = [False] * len(self.pattern)
+        for i in range(len(self.pattern)):
+            if chars[i] == self.pattern[i]:
+                flags[i] = True
+            elif chars[i] == '_':
+                flags[i] = None # type: ignore
+        return flags
+
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, Flags):
+            return False
+        for x, y in zip(self, __o):
+            if x != None and y != None and x != y:
+                return False
+        return True
+
 
 class File:
     name: str
@@ -34,26 +67,20 @@ class File:
     mtime: float
     path: str
     hash: str
-    attribs: tuple
+    flags: Flags
+    state_flags: GenericFlags
 
-    is_empty: bool
-    is_temp: bool
-    is_funny: bool
-    is_funny_attribs: bool
-
-    def __init__(self, name, size, mtime, path, hash, attribs) -> None:
+    def __init__(self, name: str, size: int, mtime: float, path: str, hash: str, flags: Flags) -> None:
         self.name = name
         self.size = size
         self.mtime = mtime
         self.path = path
         self.hash = hash
-        self.attribs = attribs
+        self.flags = flags
 
-        self.is_empty = size == 0
-        self.is_temp = False
-        self.is_funny = False
-        self.is_funny_attribs = False
+                                        #empty          temp   name   flags  duplicate
+        self.state_flags = GenericFlags([self.size == 0, False, False, False, False], "etnfd")
 
     def __repr__(self) -> str:
-        data = ", ".join([self.name, str(self.size), str(self.mtime), self.path, self.hash, attribs2str(self.attribs)])
+        data = ", ".join([self.name, str(self.size), str(self.mtime), self.path, self.hash, str(self.flags), str(self.state_flags)])
         return f"File({data})"

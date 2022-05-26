@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from typing import Any
 import configparser
 import re
 
@@ -7,8 +6,8 @@ class Config(dict):
     __parser__: ArgumentParser
     __configparser__: configparser.ConfigParser
 
-    def __init__(self, *arg, **kwarg) -> None:
-        super(Config, self).__init__(*arg, **kwarg)
+    def __init__(self) -> None:
+        super(Config, self).__init__()
         self.__parser__ = ArgumentParser()
         self.__parser__.add_argument('target', action='store',
                                      help='target directory')
@@ -42,7 +41,7 @@ class Config(dict):
                 ('TemporaryFileExtensions', ['*~', '*.tmp'], list_parser)]
         camel2snake = re.compile('(?!^)([A-Z]+)')
 
-        # if there *is* a config file
+        # if there *is* a valid config file, read it
         if 'Globals' in self.__configparser__.keys():
             for tag in tags:
                 if tag[0] in self.__configparser__['Globals'].keys():
@@ -50,7 +49,7 @@ class Config(dict):
                 else:
                     self[camel2snake.sub(r'_\1', tag[0]).lower()] = tag[1]
 
-        # couldn't find the config file
+        # couldn't find the config file or the section
         else:
             print(f"Warning: couldn't find config file: {self['config']}. Using defaults...")
             for tag in tags:

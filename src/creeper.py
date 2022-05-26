@@ -1,16 +1,16 @@
 import os
 import hashlib
-from src.file import File, bits2attribs
+from src.file import File, Flags
 
 SIZE = 65536
 
 class Creeper:
-    file_list: list[File]
+    file_dict: dict[int, File]
 
     def __init__(self):
-        self.file_list = []
+        self.file_dict = {}
 
-    def walk(self, root):
+    def creep(self, root: str):
         for root, dirs, files in os.walk(root, topdown=True):
             for file in files:
                 abs = os.path.abspath(os.path.join(root, file))
@@ -24,9 +24,10 @@ class Creeper:
                         if not data: break
                         md5.update(data)
                 # create file entry
-                self.file_list.append(File(file,
-                                           stat.st_size,
-                                           stat.st_mtime,
-                                           os.path.dirname(abs),
-                                           md5.hexdigest(),
-                                           bits2attribs(stat.st_mode)))
+                file = File(file,
+                            stat.st_size,
+                            stat.st_mtime,
+                            os.path.dirname(abs),
+                            md5.hexdigest(),
+                            Flags(stat.st_mode))
+                self.file_dict[hash(file)] = file
