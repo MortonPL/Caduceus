@@ -79,7 +79,7 @@ class File:
         self.flags = flags
 
                                         #empty          temp   name   flags  duplicate
-        self.state_flags = GenericFlags([self.size == 0, False, False, False, False], "etnfd")
+        self.state_flags = GenericFlags([self.size == 0, False, False, False, False, False], "etnfdm")
 
     def __repr__(self) -> str:
         data = ", ".join([self.name, str(self.size), str(self.mtime), self.path, self.hash, str(self.flags), str(self.state_flags)])
