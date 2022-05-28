@@ -1,8 +1,8 @@
 import os
-import hashlib
+from hashlib import md5 as hashlib_md5
 from src.file import File, Flags
 
-SIZE = 65536
+BUF_SIZE = 65536
 
 class Creeper:
     file_dict: dict[int, File]
@@ -17,10 +17,10 @@ class Creeper:
                 # ask for stat()
                 stat = os.stat(abs)
                 # eat a file to get hash
-                md5 = hashlib.md5()
+                md5 = hashlib_md5()
                 with open(abs, 'rb') as f:
                     while True:
-                        data = f.read(SIZE)
+                        data = f.read(BUF_SIZE)
                         if not data: break
                         md5.update(data)
                 # create file entry

@@ -1,10 +1,10 @@
 from argparse import ArgumentParser
-import configparser
-import re
+from configparser import ConfigParser
+from re import compile as re_compile
 
 class Config(dict):
     __parser__: ArgumentParser
-    __configparser__: configparser.ConfigParser
+    __configparser__: ConfigParser
 
     def __init__(self) -> None:
         super(Config, self).__init__()
@@ -15,7 +15,7 @@ class Config(dict):
                                      help='list of directories to compare with')
         self.__parser__.add_argument('-c', '--config', action='store', nargs='?', type=str, default=None,
                                      help='custom config file location')
-        self.__configparser__ = configparser.ConfigParser()
+        self.__configparser__ = ConfigParser()
 
     def parse(self) -> None:
         self.parse_args()
@@ -39,7 +39,7 @@ class Config(dict):
                 ('IllegalCharacters', [':', '"', ';', '*', '?', '$', '#', '\'', '|', '\\'], list_parser),
                 ('IllegalCharacterReplacement', '_', noop),
                 ('TemporaryFileExtensions', ['*~', '*.tmp'], list_parser)]
-        camel2snake = re.compile('(?!^)([A-Z]+)')
+        camel2snake = re_compile('(?!^)([A-Z]+)')
 
         # if there *is* a valid config file, read it
         if 'Globals' in self.__configparser__.keys():
