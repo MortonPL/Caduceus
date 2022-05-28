@@ -34,7 +34,7 @@ class Config(dict):
 
         # expect these tags
         noop = lambda x: x
-        list_parser = lambda x: x.split()[1:-1]
+        list_parser = lambda x: x.split()
         tags = [('DefaultFilePermissions', 'rw-r–-r–-', noop),
                 ('IllegalCharacters', [':', '"', ';', '*', '?', '$', '#', '\'', '|', '\\'], list_parser),
                 ('IllegalCharacterReplacement', '_', noop),

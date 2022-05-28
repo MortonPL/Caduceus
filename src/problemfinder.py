@@ -5,14 +5,13 @@ from src.file import File, Flags
 BUF_SIZE = 65536
 
 def analyze_flags_all(target: dict[int, File], dir: dict[int, File], desired_flags: Flags):
-
     for _, file in target.items():
-        analyzes_flag(file, desired_flags)
+        analyze_flags(file, desired_flags)
 
     for _, file in dir.items():
-        analyzes_flag(file, desired_flags)
+        analyze_flags(file, desired_flags)
 
-def analyzes_flag(file: File, desired_flags: Flags):
+def analyze_flags(file: File, desired_flags: Flags):
     if file.flags != desired_flags:
         file.state_flags[3] = True
 

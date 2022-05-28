@@ -38,7 +38,7 @@ class GenericFlags(list):
 
 
 class Flags(GenericFlags):
-    pattern = 'drwxrwxrwx'
+    pattern = 'rwxrwxrwx'
 
     def __init__(self, args) -> None:
         super(Flags, self).__init__(args, self.pattern, Flags)

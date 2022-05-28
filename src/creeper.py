@@ -11,7 +11,7 @@ class Creeper:
         self.file_dict = {}
 
     def creep(self, root: str):
-        for root, dirs, files in os.walk(root, topdown=True):
+        for root, _, files in os.walk(root, topdown=True):
             for file in files:
                 abs = os.path.abspath(os.path.join(root, file))
                 # ask for stat()
@@ -29,5 +29,5 @@ class Creeper:
                             stat.st_mtime,
                             os.path.dirname(abs),
                             md5.hexdigest(),
-                            Flags(stat.st_mode))
+                            Flags(stat.st_mode | 0b1000000000))
                 self.file_dict[hash(file)] = file
