@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from re import compile as re_compile
+from os.path import abspath as os_path_abspath
+from os.path import isabs as os_path_isabs
 
 class Config(dict):
     __parser__: ArgumentParser
@@ -19,6 +21,8 @@ class Config(dict):
 
     def parse(self) -> None:
         self.parse_args()
+        self['target'] = os_path_abspath(self['target'])
+        self['directories'] = [os_path_abspath(dir) if not os_path_isabs(dir) else dir for dir in self['directories']]
         self.parse_config()
 
     def parse_args(self) -> None:

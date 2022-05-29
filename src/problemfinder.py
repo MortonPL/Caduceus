@@ -66,7 +66,7 @@ def analyze_duplicate(file1: File, file2: File):
                         dupe = True
                         break
     if dupe:
-        if file2.mtime > file1.mtime:
+        if file2.mtime >= file1.mtime:
             file2.state_flags[4] = True
         else:
             file1.state_flags[4] = True
@@ -82,7 +82,7 @@ def analyze_samename_all(target: dict[int, File], dir: dict[int, File]):
 
 def analyze_samename(file1: File, file2: File):
     if file1.name == file2.name:
-        if file2.mtime < file1.mtime:
+        if file2.mtime <= file1.mtime:
             file2.state_flags[5] = True
         else:
             file1.state_flags[5] = True
