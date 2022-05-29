@@ -5,7 +5,7 @@ from src.file import File, Flags
 BUF_SIZE = 65536
 
 class Creeper:
-    file_dict: dict[int, File]
+    file_dict: dict[str, File]
 
     def __init__(self):
         self.file_dict = {}
@@ -30,4 +30,4 @@ class Creeper:
                             os.path.dirname(abs),
                             md5.hexdigest(),
                             Flags(stat.st_mode | 0b1000000000))
-                self.file_dict[hash(file)] = file
+                self.file_dict[os.path.join(file.path, file.name)] = file

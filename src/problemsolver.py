@@ -13,81 +13,20 @@ CODES = [stat.S_IRUSR, stat.S_IWUSR, stat.S_IXUSR,
          stat.S_IROTH, stat.S_IWOTH, stat.S_IXOTH]
 
 
-def solve_empty_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
+def solve_name_all(target: dict[str, File], dir: dict[str, File], illegal_chars: list[str], legal_char: str) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)
-    for hash, file in target.items():
-        if file.state_flags[0]:
-            solve_empty(file)
-            new_target.pop(hash)
-    target = new_target
-
-    new_dir = deepcopy(dir)
-    for hash, file in dir.items():
-        if file.state_flags[0]:
-            solve_empty(file)
-            new_dir.pop(hash)
-    dir = new_dir
-
-    return new_target, new_dir
-
-def solve_empty(file: File) -> None:
-    os_remove(os_path_join(file.path, file.name))
-
-def solve_temp_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
-    new_target = deepcopy(target)
-    for hash, file in target.items():
-        if file.state_flags[1]:
-            solve_temp(file)
-            new_target.pop(hash)
-    target = new_target
-
-    new_dir = deepcopy(dir)
-    for hash, file in dir.items():
-        if file.state_flags[1]:
-            solve_temp(file)
-            new_dir.pop(hash)
-    dir = new_dir
-
-    return new_target, new_dir
-
-def solve_temp(file: File) -> None:
-    os_remove(os_path_join(file.path, file.name))
-
-
-def solve_dupes_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
-    new_target = deepcopy(target)
-    for hash, file in target.items():
-        if file.state_flags[4]:
-            solve_dupes(file)
-            new_target.pop(hash)
-    target = new_target
-
-    new_dir = deepcopy(dir)
-    for hash, file in dir.items():
-        if file.state_flags[4]:
-            solve_dupes(file)
-            new_dir.pop(hash)
-    dir = new_dir
-
-    return new_target, new_dir
-
-def solve_dupes(file: File) -> None:
-    os_remove(os_path_join(file.path, file.name))
-
-def solve_name_all(target: dict[int, File], dir: dict[int, File], illegal_chars: list[str], legal_char: str) -> tuple[dict[int, File], dict[int, File]]:
-    new_target = deepcopy(target)
-    for fhash, file in target.items():
+    for fullname, file in target.items():
         if file.state_flags[2]:
-            new_target.pop(fhash)
+            new_target.pop(fullname)
             new_file = solve_name(file, illegal_chars, legal_char)
-            new_target[hash(new_file)] = new_file
+            new_target[os_path_join(new_file.path, new_file.name)] = new_file
 
     new_dir = deepcopy(dir)
-    for dhash, file in dir.items():
+    for fullname, file in dir.items():
         if file.state_flags[2]:
-            new_dir.pop(dhash)
+            new_dir.pop(fullname)
             new_file = solve_name(file, illegal_chars, legal_char)
-            new_dir[hash(new_file)] = new_file
+            new_dir[os_path_join(new_file.path, new_file.name)] = new_file
 
     return new_target, new_dir
 
@@ -101,19 +40,19 @@ def solve_name(file: File, illegal_chars: list[str], legal_char: str) -> File:
     return file
 
 
-def solve_samename_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
+def solve_samename_all(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)
-    for hash, file in target.items():
+    for fullname, file in target.items():
         if file.state_flags[5]:
             solve_samename(file)
-            new_target.pop(hash)
+            new_target.pop(fullname)
     target = new_target
 
     new_dir = deepcopy(dir)
-    for hash, file in dir.items():
+    for fullname, file in dir.items():
         if file.state_flags[5]:
             solve_samename(file)
-            new_dir.pop(hash)
+            new_dir.pop(fullname)
     dir = new_dir
 
     return new_target, new_dir
@@ -121,27 +60,27 @@ def solve_samename_all(target: dict[int, File], dir: dict[int, File]) -> tuple[d
 def solve_samename(file: File) -> None:
     os_remove(os_path_join(file.path, file.name))
 
-def solve_movable_all(target: dict[int, File], dir: dict[int, File], target_root: str, dir_roots: list[str]) -> tuple[dict[int, File], dict[int, File]]:
+def solve_movable_all(target: dict[str, File], dir: dict[str, File], target_root: str, dir_roots: list[str]) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)
-    for fhash, file in target.items():
+    for fullname, file in target.items():
         if file.state_flags[6]:
-            new_target.pop(fhash)
+            new_target.pop(fullname)
             new_file = solve_movable(file, target_root, dir_roots)
-            new_target[hash(new_file)] = new_file
+            new_target[os_path_join(new_file.path, new_file.name)] = new_file
 
     new_dir = deepcopy(dir)
-    for dhash, file in dir.items():
+    for fullname, file in dir.items():
         if file.state_flags[6]:
-            new_dir.pop(dhash)
+            new_dir.pop(fullname)
             new_file = solve_movable(file, target_root, dir_roots)
-            new_dir[hash(new_file)] = new_file
+            new_dir[os_path_join(new_file.path, new_file.name)] = new_file
 
     return new_target, new_dir
 
 def solve_movable(file: File, target_root: str, dir_roots: list[str]) -> File:
     for root in dir_roots:
         d_prefix = os_path_commonpath([root, file.path])
-        # if it's in this root
+        # if it's in *this* root
         if d_prefix == root:
             named_path = os_path_join(file.path, file.name)
             destination = os_path_join(target_root, os_path_relpath(named_path, root))
