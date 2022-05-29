@@ -20,7 +20,7 @@ def solve_flags_all(target: dict[int, File], dir: dict[int, File], desired_flags
 
     return target, dir
 
-def solve_flags(file: File, desired_flags: Flags):
+def solve_flags(file: File, desired_flags: Flags) -> None:
     flags = 0
 
     for flag, code in zip(desired_flags, CODES):
@@ -50,7 +50,7 @@ def solve_dupes_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict
 
     return new_target, new_dir
 
-def solve_dupes(file: File):
+def solve_dupes(file: File) -> None:
     os_remove(os_path_join(file.path, file.name))
 
 def solve_empty_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
@@ -70,7 +70,7 @@ def solve_empty_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict
 
     return new_target, new_dir
 
-def solve_empty(file: File):
+def solve_empty(file: File) -> None:
     os_remove(os_path_join(file.path, file.name))
 
 def solve_temp_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[int, File], dict[int, File]]:
@@ -90,5 +90,21 @@ def solve_temp_all(target: dict[int, File], dir: dict[int, File]) -> tuple[dict[
 
     return new_target, new_dir
 
-def solve_temp(file: File):
+def solve_temp(file: File) -> None:
     os_remove(os_path_join(file.path, file.name))
+
+def solve_name_all(target: dict[int, File], dir: dict[int, File], illegal_chars: list[str], legal_char: str) -> tuple[dict[int, File], dict[int, File]]:
+    for _, file in target.items():
+        if file.state_flags[2]:
+            solve_name(file, illegal_chars, legal_char)
+
+    for _, file in dir.items():
+        if file.state_flags[2]:
+            solve_name(file, illegal_chars, legal_char)
+
+    return target, dir
+
+def solve_name(file: File, illegal_chars: list[str], legal_char: str) -> File:
+    for ichar in illegal_chars:
+        file.name = file.name.replace(ichar, legal_char)
+    return file
