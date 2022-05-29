@@ -2,7 +2,7 @@ from src.config import Config
 from src.creeper import Creeper
 from src.file import Flags
 from src.problemfinder import analyze_flags_all, analyze_name_all, analyze_temp_all, analyze_duplicate_all, analyze_movable_all, analyze_samename_all
-from src.problemsolver import solve_flags_all
+from src.problemsolver import solve_empty_all, solve_temp_all, solve_dupes_all, solve_flags_all
 
 
 conf = Config()
@@ -28,4 +28,8 @@ for k, v in target_creeper.file_dict.items():
 for k, v in dirs_creeper.file_dict.items():
     print(k, v)
 
-solve_flags_all(target_creeper.file_dict, dirs_creeper.file_dict, Flags(conf['default_file_permissions']))
+
+target_creeper.file_dict, dirs_creeper.file_dict = solve_empty_all(target_creeper.file_dict, dirs_creeper.file_dict)
+target_creeper.file_dict, dirs_creeper.file_dict = solve_temp_all(target_creeper.file_dict, dirs_creeper.file_dict)
+target_creeper.file_dict, dirs_creeper.file_dict = solve_dupes_all(target_creeper.file_dict, dirs_creeper.file_dict)
+target_creeper.file_dict, dirs_creeper.file_dict = solve_flags_all(target_creeper.file_dict, dirs_creeper.file_dict, Flags(conf['default_file_permissions']))
