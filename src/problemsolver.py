@@ -1,15 +1,11 @@
-from os import chmod as os_chmod
 from os import rename as os_rename
 from os.path import join as os_path_join
 from os.path import relpath as os_path_relpath
 from os.path import commonpath as os_path_commonpath
 from copy import deepcopy
-import stat
-from src.file import File, Flags
+from src.file import File
 
-CODES = [stat.S_IRUSR, stat.S_IWUSR, stat.S_IXUSR,
-         stat.S_IRGRP, stat.S_IWGRP, stat.S_IXGRP,
-         stat.S_IROTH, stat.S_IWOTH, stat.S_IXOTH]
+
 
 
 def solve_movable_all(target: dict[str, File], dir: dict[str, File], target_root: str, dir_roots: list[str]) -> tuple[dict[str, File], dict[str, File]]:
@@ -39,28 +35,3 @@ def solve_movable(file: File, target_root: str, dir_roots: list[str]) -> File:
             os_rename(named_path, destination)
             file.path = destination
     return file
-
-
-def solve_flags_all(target: dict[int, File], dir: dict[int, File], desired_flags: Flags) -> tuple[dict[int, File], dict[int, File]]:
-    for _, file in target.items():
-        if file.state_flags[3]:
-            solve_flags(file, desired_flags)
-
-    for _, file in dir.items():
-        if file.state_flags[3]:
-            solve_flags(file, desired_flags)
-
-    return target, dir
-
-def solve_flags(file: File, desired_flags: Flags) -> None:
-    flags = 0
-
-    for flag, code in zip(desired_flags, CODES):
-        if flag is None:
-            continue
-        if flag:
-            flags |= code
-        else:
-            flags &= ~code
-    os_chmod(os_path_join(file.path, file.name), flags)
-    file.state_flags[3] = False

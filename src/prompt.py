@@ -47,3 +47,8 @@ def prompt_samename(filename1: str, filename2: str) -> bool:
     strings = [filename1, "has the same name as",
                filename2, ", remove former?", OPTIONS, ""]
     return prompt(" ".join(strings), 4)
+
+def prompt_flags(filename: str, badflags: str, goodflags: str) -> bool:
+    strings = [filename, "has different permissions",
+               badflags, "from default", goodflags, ", apply default?", OPTIONS, ""]
+    return prompt(" ".join(strings), 6)
