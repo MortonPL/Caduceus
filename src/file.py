@@ -12,21 +12,21 @@ class GenericFlags(list):
         else:
             caller = args[2]
 
+        # from bit flags
         if isinstance(args[0], int):
             self.extend([(args[0] & 2**mask) == 2**mask for mask in range(len(self.pattern) - 1, -1, -1)])
+        # from string
         elif isinstance(args[0], str):
             self.extend(caller.revstr(self, args[0]))
+        # from list of bools
         elif isinstance(args[0], list):
             self.extend(args[0])
-
 
     def revstr(self, chars) -> list:
         return [inchar == patchar for inchar, patchar in zip(chars, self.pattern)]
 
-
     def __str__(self) -> str:
         return "".join([char if bit else '-' for bit, char in zip(self, self.pattern)])
-
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, GenericFlags):
@@ -36,7 +36,6 @@ class GenericFlags(list):
                 return False
         return True
     
-
     def __ne__(self, __o: object) -> bool:
         return not self.__eq__(__o)
 
@@ -44,10 +43,8 @@ class GenericFlags(list):
 class Flags(GenericFlags):
     pattern = 'rwxrwxrwx'
 
-
     def __init__(self, args) -> None:
         super(Flags, self).__init__(args, self.pattern, Flags)
-
 
     def revstr(self, chars: str) -> list:
         flags = [False] * len(self.pattern)
@@ -57,7 +54,6 @@ class Flags(GenericFlags):
             elif chars[i] == '_':
                 flags[i] = None # type: ignore
         return flags
-
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Flags):
