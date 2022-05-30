@@ -1,12 +1,13 @@
 from copy import deepcopy
 from os import remove as os_remove
 
+from src.config import Config
 from src.file import File
 from src.prompt import prompt_dupe
 
 BUF_SIZE = 65536
 
-def run_dupe(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
+def run_dupe(target: dict[str, File], dir: dict[str, File], conf: Config) -> tuple[dict[str, File], dict[str, File]]:
     analyze_duplicate_all(target, dir)
 
     new_target = deepcopy(target)

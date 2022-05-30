@@ -11,12 +11,18 @@ class Config(dict):
     def __init__(self) -> None:
         super(Config, self).__init__()
         self.__parser__ = ArgumentParser()
+        self.__parser__.add_argument('-m', '--mode', action='extend', nargs='*', type=str,
+                                     default=['empty', 'temp', 'dupes', 'badnames', 'samenames', 'flags', 'movable'],
+                                     choices=['empty', 'temp', 'dupes', 'badnames', 'samenames', 'flags', 'movable'],
+                                     help='')
         self.__parser__.add_argument('target', action='store',
                                      help='target directory')
         self.__parser__.add_argument('directories', action='extend', nargs='+', type=str, default=[],
                                      help='list of directories to compare with')
         self.__parser__.add_argument('-c', '--config', action='store', nargs='?', type=str, default=None,
                                      help='custom config file location')
+        self.__parser__.add_argument('-a', '--all', action='store_true',
+                                     help='accept all changes')
         self.__configparser__ = ConfigParser()
 
     def parse(self) -> None:

@@ -26,29 +26,34 @@ def prompt(string: str, cache_index: int) -> bool:
 
 
 def prompt_empty(filename: str) -> bool:
-    strings = [filename, "is empty. Remove?", OPTIONS, ""]
-    return prompt(" ".join(strings), 0)
+    strings = [filename, " is empty. Remove? ", OPTIONS, " "]
+    return prompt("".join(strings), 0)
 
 def prompt_temp(filename: str) -> bool:
-    strings = [filename, "is a temporary file. Remove?", OPTIONS, ""]
-    return prompt(" ".join(strings), 1)
+    strings = [filename, " is a temporary file. Remove? ", OPTIONS, " "]
+    return prompt("".join(strings), 1)
 
 def prompt_dupe(filename1: str, filename2: str) -> bool:
-    strings = [filename1, "has the same contents as",
-               filename2, ", remove former?", OPTIONS, ""]
-    return prompt(" ".join(strings), 2)
+    strings = [filename1, " has the same contents as ",
+               filename2, ", remove former? ", OPTIONS, " "]
+    return prompt("".join(strings), 2)
 
 def prompt_name(filename1: str) -> bool:
-    strings = [filename1, "'s name contains illegal characters, replace?",
-               OPTIONS, ""]
-    return prompt(" ".join(strings), 3)
+    strings = [filename1, "'s name contains illegal characters, replace? ",
+               OPTIONS, " "]
+    return prompt("".join(strings), 3)
 
 def prompt_samename(filename1: str, filename2: str) -> bool:
-    strings = [filename1, "has the same name as",
-               filename2, ", remove former?", OPTIONS, ""]
-    return prompt(" ".join(strings), 4)
+    strings = [filename1, " has the same name as ",
+               filename2, ", remove former? ", OPTIONS, " "]
+    return prompt("".join(strings), 4)
+
+def prompt_move(filename1: str, filename2: str) -> bool:
+    strings = [filename1, " is a file not yet in target dir. Expected directory: ",
+               filename2, ", move? ", OPTIONS, " "]
+    return prompt("".join(strings), 5)
 
 def prompt_flags(filename: str, badflags: str, goodflags: str) -> bool:
-    strings = [filename, "has different permissions",
-               badflags, "from default", goodflags, ", apply default?", OPTIONS, ""]
-    return prompt(" ".join(strings), 6)
+    strings = [filename, " has different permissions ",
+               badflags, " from default ", goodflags, ", apply default? ", OPTIONS, " "]
+    return prompt("".join(strings), 6)

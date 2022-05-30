@@ -2,10 +2,11 @@ from copy import deepcopy
 from os import remove as os_remove
 from os.path import join as os_path_join
 
+from src.config import Config
 from src.file import File
 from src.prompt import prompt_empty
 
-def run_empty(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
+def run_empty(target: dict[str, File], dir: dict[str, File], conf: Config) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)
     for fullname, file in target.items():
         if not file.state_flags[0]:

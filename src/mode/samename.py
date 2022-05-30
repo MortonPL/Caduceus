@@ -1,10 +1,11 @@
 from copy import deepcopy
 from os import remove as os_remove
 
+from src.config import Config
 from src.file import File
 from src.prompt import prompt_samename
 
-def run_samename(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
+def run_samename(target: dict[str, File], dir: dict[str, File], conf: Config) -> tuple[dict[str, File], dict[str, File]]:
     analyze_samename_all(target, dir)
     new_target = deepcopy(target)
     for fullname, file in target.items():
