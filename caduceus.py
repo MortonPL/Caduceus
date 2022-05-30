@@ -34,7 +34,7 @@ if __name__ == "__main__":
     if conf['all']:
         src.prompt.CACHE = [2]*7
     # run each mode
-    for mode in conf['mode']:
+    for mode in conf['modes']:
         if mode == 'empty':
             target_dict, dirs_dict = run_empty(target_dict, dirs_dict, conf)
         elif mode == 'temp':

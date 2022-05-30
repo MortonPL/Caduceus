@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from re import compile as re_compile
 from os.path import abspath as os_path_abspath
 from os.path import isabs as os_path_isabs
+from os.path import isdir as os_path_isdir
 from os.path import join as os_path_join
 
 class Config(dict):
@@ -11,8 +12,8 @@ class Config(dict):
 
     def __init__(self) -> None:
         super(Config, self).__init__()
-        self.__parser__ = ArgumentParser(prog='Caduceus')
-        self.__parser__.add_argument('-m', '--mode', action='store', nargs='?', type=lambda s: s.split(','),
+        self.__parser__ = ArgumentParser(prog='caduceus.py')
+        self.__parser__.add_argument('-m', '--modes', action='store', nargs='?', type=lambda s: s.split(','),
                                      default=['empty', 'temp', 'dupes', 'badnames', 'samenames', 'flags', 'movable'],
                                      help='comma separated list of modes of operation, available modes: empty, temp, dupes, badnames, samenames, flags, movable. Defaults to all of them')
         self.__parser__.add_argument('target', action='store',
@@ -29,7 +30,20 @@ class Config(dict):
         # convert paths to absolute
         self.parse_args()
         self['target'] = os_path_abspath(self['target'])
+        if not os_path_isdir(self['target']):
+            print("Given target is not a valid directory! Exiting...")
+            quit()
         self['directories'] = [os_path_abspath(dir) if not os_path_isabs(dir) else dir for dir in self['directories']]
+        new_dirs = []
+        for dir in self['directories']:
+            if not os_path_isdir(dir):
+                print(f"Given directory {dir} is not a valid directory! Ignoring...")
+            else:
+                new_dirs.append(dir)
+        if len(new_dirs) == 0:
+            print("No valid directory remains! Exiting...")
+            quit()
+        self['directories'] = new_dirs
         self.parse_config(main_dir)
 
     def parse_args(self) -> None:
