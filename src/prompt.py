@@ -2,10 +2,12 @@ OPTIONS = "([Y]es/[a]ll/[n]o/[s]kip)"
 CACHE = [0]*7
 
 def prompt(string: str, cache_index: int) -> bool:
+    # if already responded with all or skip, don't ask
     if CACHE[cache_index] == 1:
         return False
     elif CACHE[cache_index] == 2:
         return True
+    # expect only these responses
     while True:
         re = input(string)
         if len(re) == 0:

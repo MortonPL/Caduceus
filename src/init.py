@@ -1,13 +1,15 @@
 from src.config import Config
 from src.creeper import Creeper
 
-def init():
+def init(main_path: str):
     conf = Config()
-    conf.parse()
+    conf.parse(main_path)
 
+    # walk through the target directory
     target_creeper = Creeper()
     target_creeper.creep(conf['target'])
 
+    # walk through other directories
     dirs_creeper = Creeper()
     for dir in conf['directories']:
         dirs_creeper.creep(dir)

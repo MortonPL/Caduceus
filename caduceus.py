@@ -1,3 +1,5 @@
+from os.path import dirname as os_path_dirname
+
 from src.init import init
 from src.mode.duplicate import run_dupe
 from src.mode.empty import run_empty
@@ -9,7 +11,8 @@ from src.mode.temp import run_temp
 import src.prompt
 
 
-target_dict, dirs_dict, conf = init()
+target_dict, dirs_dict, conf = init(os_path_dirname(__file__))
+# set auto confirm for all modes
 if conf['all']:
     src.prompt.CACHE = [2]*7
 for mode in conf['mode']:
