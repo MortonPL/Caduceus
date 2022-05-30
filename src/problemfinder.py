@@ -12,20 +12,6 @@ def analyze_flags(file: File, desired_flags: Flags):
         file.state_flags[3] = True
 
 
-def analyze_name_all(target: dict[str, File], dir: dict[str, File], illegal_chars: list[str]):
-    for _, file in target.items():
-        analyze_name(file, illegal_chars)
-
-    for _, file in dir.items():
-        analyze_name(file, illegal_chars)
-
-def analyze_name(file: File, illegal_chars: list[str]):
-         for char in illegal_chars:
-            if char in file.name:
-                file.state_flags[2] = True
-                break
-
-
 def analyze_samename_all(target: dict[str, File], dir: dict[str, File]):
     for fullpath1, tfile in target.items():
         for _, dfile in dir.items():

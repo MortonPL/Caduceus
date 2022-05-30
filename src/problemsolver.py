@@ -13,33 +13,6 @@ CODES = [stat.S_IRUSR, stat.S_IWUSR, stat.S_IXUSR,
          stat.S_IROTH, stat.S_IWOTH, stat.S_IXOTH]
 
 
-def solve_name_all(target: dict[str, File], dir: dict[str, File], illegal_chars: list[str], legal_char: str) -> tuple[dict[str, File], dict[str, File]]:
-    new_target = deepcopy(target)
-    for fullname, file in target.items():
-        if file.state_flags[2]:
-            new_target.pop(fullname)
-            new_file = solve_name(file, illegal_chars, legal_char)
-            new_target[os_path_join(new_file.path, new_file.name)] = new_file
-
-    new_dir = deepcopy(dir)
-    for fullname, file in dir.items():
-        if file.state_flags[2]:
-            new_dir.pop(fullname)
-            new_file = solve_name(file, illegal_chars, legal_char)
-            new_dir[os_path_join(new_file.path, new_file.name)] = new_file
-
-    return new_target, new_dir
-
-def solve_name(file: File, illegal_chars: list[str], legal_char: str) -> File:
-    old_name = file.name
-    for ichar in illegal_chars:
-        if ichar in file.name:
-            file.name = file.name.replace(ichar, legal_char)
-            os_rename(os_path_join(file.path, old_name), os_path_join(file.path, file.name))
-            file.state_flags[2] = False
-    return file
-
-
 def solve_samename_all(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)
     for fullname, file in target.items():

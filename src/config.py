@@ -40,7 +40,7 @@ class Config(dict):
         noop = lambda x: x
         list_parser = lambda x: x.split()
         tags = [('DefaultFilePermissions', 'rw-r–-r–-', noop),
-                ('IllegalCharacters', [':', '"', ';', '*', '?', '$', '#', '\'', '|', '\\'], list_parser),
+                ('IllegalCharacters', [':', ',', '"', ';', '*', '?', '$', '#', '\'', '|', '\\', '"'], list_parser),
                 ('IllegalCharacterReplacement', '_', noop),
                 ('TemporaryFileExtensions', ['*~', '*.tmp'], list_parser)]
         camel2snake = re_compile('(?!^)([A-Z]+)')

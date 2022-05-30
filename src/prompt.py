@@ -1,7 +1,3 @@
-from os.path import join as os_path_join
-
-from src.file import File
-
 OPTIONS = "([Y]es/[a]ll/[n]o/[s]kip)"
 CACHE = [0]*7
 
@@ -33,12 +29,16 @@ def prompt_empty(filename: str) -> bool:
     strings = [filename, "is empty. Remove?", OPTIONS, ""]
     return prompt(" ".join(strings), 0)
 
-
 def prompt_temp(filename: str) -> bool:
     strings = [filename, "is a temporary file. Remove?", OPTIONS, ""]
     return prompt(" ".join(strings), 1)
 
-def prompt_dupes(filename1: str, filename2: str) -> bool:
+def prompt_dupe(filename1: str, filename2: str) -> bool:
     strings = [filename1, "has the same contents as",
                filename2, ", remove former?", OPTIONS, ""]
     return prompt(" ".join(strings), 2)
+
+def prompt_name(filename1: str) -> bool:
+    strings = [filename1, "'s name contains illegal characters, replace?",
+               OPTIONS, ""]
+    return prompt(" ".join(strings), 3)

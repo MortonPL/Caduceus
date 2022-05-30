@@ -1,22 +1,21 @@
 from copy import deepcopy
 from os import remove as os_remove
-from os.path import join as os_path_join
 
 from src.file import File
-from src.prompt import prompt_dupes
+from src.prompt import prompt_dupe
 
 BUF_SIZE = 65536
 
-def run_dupes(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
+def run_dupe(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
     analyze_duplicate_all(target, dir)
 
     new_target = deepcopy(target)
     for fullname, file in target.items():
         if not file.state_flags[4]:
             continue
-        if not prompt_dupes(fullname, file.ref_file):
+        if not prompt_dupe(fullname, file.ref_file):
             continue
-        solve_dupes(target, dir, file, fullname)
+        solve_dupe(target, dir, file, fullname)
         new_target.pop(fullname)
     target = new_target
 
@@ -24,16 +23,16 @@ def run_dupes(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, 
     for fullname, file in dir.items():
         if not file.state_flags[4]:
             continue
-        if not prompt_dupes(fullname, file.ref_file):
+        if not prompt_dupe(fullname, file.ref_file):
             continue
-        solve_dupes(target, dir, file, fullname)
+        solve_dupe(target, dir, file, fullname)
         new_dir.pop(fullname)
     dir = new_dir
 
     return new_target, new_dir
 
 
-def solve_dupes(target: dict[str, File], dir: dict[str, File], file: File, file_fullname: str) -> None:
+def solve_dupe(target: dict[str, File], dir: dict[str, File], file: File, file_fullname: str) -> None:
     os_remove(file_fullname)
     for tfile in target.values():
         if tfile.ref_file == file_fullname:
