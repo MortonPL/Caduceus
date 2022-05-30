@@ -42,3 +42,8 @@ def prompt_name(filename1: str) -> bool:
     strings = [filename1, "'s name contains illegal characters, replace?",
                OPTIONS, ""]
     return prompt(" ".join(strings), 3)
+
+def prompt_samename(filename1: str, filename2: str) -> bool:
+    strings = [filename1, "has the same name as",
+               filename2, ", remove former?", OPTIONS, ""]
+    return prompt(" ".join(strings), 4)

@@ -1,5 +1,4 @@
 from os import chmod as os_chmod
-from os import remove as os_remove
 from os import rename as os_rename
 from os.path import join as os_path_join
 from os.path import relpath as os_path_relpath
@@ -12,26 +11,6 @@ CODES = [stat.S_IRUSR, stat.S_IWUSR, stat.S_IXUSR,
          stat.S_IRGRP, stat.S_IWGRP, stat.S_IXGRP,
          stat.S_IROTH, stat.S_IWOTH, stat.S_IXOTH]
 
-
-def solve_samename_all(target: dict[str, File], dir: dict[str, File]) -> tuple[dict[str, File], dict[str, File]]:
-    new_target = deepcopy(target)
-    for fullname, file in target.items():
-        if file.state_flags[5]:
-            solve_samename(file)
-            new_target.pop(fullname)
-    target = new_target
-
-    new_dir = deepcopy(dir)
-    for fullname, file in dir.items():
-        if file.state_flags[5]:
-            solve_samename(file)
-            new_dir.pop(fullname)
-    dir = new_dir
-
-    return new_target, new_dir
-
-def solve_samename(file: File) -> None:
-    os_remove(os_path_join(file.path, file.name))
 
 def solve_movable_all(target: dict[str, File], dir: dict[str, File], target_root: str, dir_roots: list[str]) -> tuple[dict[str, File], dict[str, File]]:
     new_target = deepcopy(target)

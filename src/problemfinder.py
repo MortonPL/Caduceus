@@ -12,21 +12,6 @@ def analyze_flags(file: File, desired_flags: Flags):
         file.state_flags[3] = True
 
 
-def analyze_samename_all(target: dict[str, File], dir: dict[str, File]):
-    for fullpath1, tfile in target.items():
-        for _, dfile in dir.items():
-            analyze_samename(tfile, dfile)
-        for fullpath2, t2file in target.items():
-            if fullpath1 != fullpath2:
-                analyze_samename(tfile, t2file)
-
-def analyze_samename(file1: File, file2: File):
-    if file1.name == file2.name:
-        if file2.mtime <= file1.mtime:
-            file2.state_flags[5] = True
-        else:
-            file1.state_flags[5] = True
-
 def analyze_movable_all(target: dict[str, File], dir: dict[str, File]):
     for _, dfile in dir.items():
         for _, tfile in target.items():
